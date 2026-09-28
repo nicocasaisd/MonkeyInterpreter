@@ -5,6 +5,7 @@ import (
 	"monkey/token"
 )
 
+// *** Interfaces
 type Node interface {
 	TokenLiteral() string
 	String() string
@@ -17,6 +18,8 @@ type Expression interface {
 	Node
 	expressionNode()
 }
+
+// ***
 
 type Program struct {
 	Statements []Statement
@@ -58,6 +61,60 @@ type Identifier struct {
 
 func (i *Identifier) expressionNode()      {}
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
+
+// Integer Literal
+type IntegerLiteral struct {
+	Token token.Token
+	Value int64
+}
+
+func (il *IntegerLiteral) expressionNode()      {}
+func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
+func (il *IntegerLiteral) String() string       { return il.Token.Literal }
+
+// Prefix Expression
+type PrefixExpression struct {
+	Token    token.Token // could be ! or -
+	Operator string
+	Right    Expression
+}
+
+func (pe *PrefixExpression) expressionNode()      {}
+func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
+func (pe *PrefixExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.Right.String())
+	out.WriteString(")")
+
+	return out.String()
+}
+
+// Infix Expression
+type InfixExpression struct {
+	Token    token.Token // the operator token, e.g. +
+	Right    Expression
+	Operator string
+	Left     Expression
+}
+
+func (ie *InfixExpression) expressionNode()      {}
+func (ie *InfixExpression) TokenLiteral() string { return ie.Token.Literal }
+func (ie *InfixExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(ie.Left.String())
+	out.WriteString(ie.Operator)
+	out.WriteString(ie.Right.String())
+	out.WriteString(")")
+
+	return out.String()
+}
+
+// Functions
 
 func (p *Program) TokenLiteral() string {
 	if len(p.Statements) > 0 {
