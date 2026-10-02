@@ -95,9 +95,9 @@ func (pe *PrefixExpression) String() string {
 // Infix Expression
 type InfixExpression struct {
 	Token    token.Token // the operator token, e.g. +
-	Right    Expression
-	Operator string
 	Left     Expression
+	Operator string
+	Right    Expression
 }
 
 func (ie *InfixExpression) expressionNode()      {}
@@ -107,7 +107,7 @@ func (ie *InfixExpression) String() string {
 
 	out.WriteString("(")
 	out.WriteString(ie.Left.String())
-	out.WriteString(ie.Operator)
+	out.WriteString(" " + ie.Operator + " ")
 	out.WriteString(ie.Right.String())
 	out.WriteString(")")
 
